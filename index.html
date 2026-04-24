@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ETIT</title>
+  <style>
+    :root {
+      --bg: #121212;
+      --panel: #1b1b1b;
+      --panel-2: #171717;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f3f4f6;
+      --muted: #9ca3af;
+      --accent: #67e8f9;
+      --accent-2: #22d3ee;
+      --success: #86efac;
+      --error: #fda4af;
+      --radius: 18px;
+      --radius-sm: 12px;
+      --shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+      --transition: 180ms ease;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+    }
+
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(103, 232, 249, 0.10), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(34, 211, 238, 0.08), transparent 24%),
+        var(--bg);
+      color: var(--text);
+      padding: 28px 16px;
+    }
+
+    .wrap {
+      width: min(980px, 100%);
+      margin: 0 auto;
+    }
+
+    .app {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(16px);
+    }
+
+    .topbar {
+      padding: 28px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      margin: 0;
+      font-size: clamp(2rem, 6vw, 3.4rem);
+      font-weight: 700;
+      letter-spacing: -0.06em;
+      line-height: 1;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      padding: 18px 28px 0;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--muted);
+      padding: 11px 16px;
+      border-radius: 999px;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition), border-color var(--transition), transform var(--transition);
+    }
+
+    .tab:hover,
+    .tab:focus-visible {
+      outline: none;
+      color: var(--text);
+      border-color: rgba(103, 232, 249, 0.28);
+      transform: translateY(-1px);
+    }
+
+    .tab.active {
+      color: #041015;
+      background: linear-gradient(180deg, var(--accent), var(--accent-2));
+      border-color: transparent;
+      box-shadow: 0 12px 28px rgba(34, 211, 238, 0.22);
+    }
+
+    .content {
+      padding: 22px 28px 28px;
+    }
+
+    .panel {
+      display: none;
+      animation: fade 180ms ease;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.012));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 180px;
+      resize: vertical;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--panel-2);
+      color: var(--text);
+      font: inherit;
+      line-height: 1.6;
+      padding: 14px 16px;
+      transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+    }
+
+    textarea::placeholder {
+      color: #6b7280;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: rgba(103, 232, 249, 0.34);
+      box-shadow: 0 0 0 4px rgba(103, 232, 249, 0.10);
+      background: #181818;
+    }
+
+    textarea[readonly] {
+      background: #151515;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .btn {
+      appearance: none;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      padding: 11px 15px;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition), background var(--transition), border-color var(--transition), color var(--transition);
+    }
+
+    .btn:hover,
+    .btn:focus-visible {
+      outline: none;
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, var(--accent), var(--accent-2));
+      color: #041015;
+      box-shadow: 0 12px 28px rgba(34, 211, 238, 0.20);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      border-color: var(--border);
+    }
+
+    .status {
+      min-height: 20px;
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .status.success {
+      color: var(--success);
+    }
+
+    .status.error {
+      color: var(--error);
+    }
+
+    @keyframes fade {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 760px) {
+      .topbar,
+      .tabs,
+      .content {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      textarea {
+        min-height: 160px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <main class="app">
+      <header class="topbar">
+        <h1 class="brand">ETIT</h1>
+      </header>
+
+      <div class="tabs" role="tablist" aria-label="Modes">
+        <button class="tab active" type="button" role="tab" aria-selected="true" aria-controls="encode-panel" id="encode-tab" data-target="encode-panel">Encode</button>
+        <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="decode-panel" id="decode-tab" data-target="decode-panel">Decode</button>
+      </div>
+
+      <section class="content">
+        <section class="panel active" id="encode-panel" role="tabpanel" aria-labelledby="encode-tab">
+          <div class="grid">
+            <div class="card">
+              <label for="coverText">Cover Text</label>
+              <textarea id="coverText" placeholder="Cover Text"></textarea>
+            </div>
+
+            <div class="card">
+              <label for="secretText">Secret Text</label>
+              <textarea id="secretText" placeholder="Secret Text"></textarea>
+            </div>
+
+            <div class="card full">
+              <label for="encodedText">Payload</label>
+              <textarea id="encodedText" readonly placeholder="Generated payload"></textarea>
+              <div class="actions">
+                <button class="btn btn-primary" id="generateBtn" type="button">Generate and Copy</button>
+                <button class="btn btn-secondary" id="copyEncodedBtn" type="button">Copy</button>
+                <button class="btn btn-secondary" id="clearEncodeBtn" type="button">Clear</button>
+              </div>
+              <div class="status" id="encodeStatus" aria-live="polite"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" id="decode-panel" role="tabpanel" aria-labelledby="decode-tab">
+          <div class="grid">
+            <div class="card full">
+              <label for="decodeInput">Paste the suspicious text here</label>
+              <textarea id="decodeInput" placeholder="Paste the suspicious text here"></textarea>
+            </div>
+
+            <div class="card full">
+              <label for="decodedText">Decoded from zero-width characters</label>
+              <textarea id="decodedText" readonly placeholder="Decoded from zero-width characters"></textarea>
+              <div class="actions">
+                <button class="btn btn-primary" id="decodeBtn" type="button">Decode</button>
+                <button class="btn btn-secondary" id="copyDecodedBtn" type="button">Copy</button>
+                <button class="btn btn-secondary" id="clearDecodeBtn" type="button">Clear</button>
+              </div>
+              <div class="status" id="decodeStatus" aria-live="polite"></div>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      const ZERO = "\u200C";
+      const ONE = "\u200D";
+      const BOUNDARY = "\u200B";
+
+      const SIGNATURE_BYTES = new Uint8Array([69, 84, 73, 84]);
+      const textEncoder = new TextEncoder();
+      const textDecoder = new TextDecoder("utf-8", { fatal: true });
+
+      const tabs = Array.from(document.querySelectorAll(".tab"));
+      const panels = Array.from(document.querySelectorAll(".panel"));
+
+      const coverText = document.getElementById("coverText");
+      const secretText = document.getElementById("secretText");
+      const encodedText = document.getElementById("encodedText");
+      const encodeStatus = document.getElementById("encodeStatus");
+
+      const decodeInput = document.getElementById("decodeInput");
+      const decodedText = document.getElementById("decodedText");
+      const decodeStatus = document.getElementById("decodeStatus");
+
+      function setStatus(element, message, type) {
+        element.textContent = message || "";
+        element.className = "status" + (type ? " " + type : "");
+      }
+
+      function setActivePanel(id) {
+        tabs.forEach(function (tab) {
+          const active = tab.dataset.target === id;
+          tab.classList.toggle("active", active);
+          tab.setAttribute("aria-selected", String(active));
+        });
+
+        panels.forEach(function (panel) {
+          panel.classList.toggle("active", panel.id === id);
+        });
+      }
+
+      function byteToZeroWidth(byte) {
+        return byte
+          .toString(2)
+          .padStart(8, "0")
+          .replace(/0/g, ZERO)
+          .replace(/1/g, ONE);
+      }
+
+      function bytesToPayload(bytes) {
+        return Array.from(bytes, byteToZeroWidth).join(BOUNDARY);
+      }
+
+      function zeroWidthChunkToByte(chunk) {
+        if (!/^[\u200C\u200D]{8}$/.test(chunk)) {
+          throw new Error("Invalid hidden payload.");
+        }
+
+        const binary = chunk.replace(/\u200C/g, "0").replace(/\u200D/g, "1");
+        return parseInt(binary, 2);
+      }
+
+      function extractZeroWidth(text) {
+        let result = "";
+        for (const char of text) {
+          if (char === ZERO || char === ONE || char === BOUNDARY) {
+            result += char;
+          }
+        }
+        return result;
+      }
+
+      function getSignaturePayload() {
+        return bytesToPayload(SIGNATURE_BYTES);
+      }
+
+      function encodeSecret(cover, secret) {
+        if (!cover.trim()) {
+          throw new Error("Cover Text is required.");
+        }
+
+        if (!secret) {
+          throw new Error("Secret Text is required.");
+        }
+
+        const secretBytes = textEncoder.encode(secret);
+        const signature = getSignaturePayload();
+        const body = bytesToPayload(secretBytes);
+        return cover + signature + (body ? BOUNDARY + body : "");
+      }
+
+      function decodeSecret(input) {
+        if (!input.trim()) {
+          throw new Error("Input is required.");
+        }
+
+        const payload = extractZeroWidth(input);
+
+        if (!payload) {
+          throw new Error("No hidden message found.");
+        }
+
+        const signature = getSignaturePayload();
+
+        if (!payload.startsWith(signature)) {
+          throw new Error("No valid ETIT payload found.");
+        }
+
+        const remaining = payload.slice(signature.length);
+        if (!remaining) {
+          return "";
+        }
+
+        if (!remaining.startsWith(BOUNDARY)) {
+          throw new Error("Invalid ETIT payload.");
+        }
+
+        const dataSection = remaining.slice(BOUNDARY.length);
+        if (!dataSection) {
+          return "";
+        }
+
+        const chunks = dataSection.split(BOUNDARY).filter(function (chunk) {
+          return chunk.length > 0;
+        });
+
+        if (!chunks.length) {
+          return "";
+        }
+
+        const bytes = new Uint8Array(chunks.map(zeroWidthChunkToByte));
+
+        try {
+          return textDecoder.decode(bytes);
+        } catch (error) {
+          throw new Error("Failed to decode hidden text.");
+        }
+      }
+
+      async function copyToClipboard(value) {
+        await navigator.clipboard.writeText(value);
+      }
+
+      tabs.forEach(function (tab) {
+        tab.addEventListener("click", function () {
+          setActivePanel(tab.dataset.target);
+        });
+      });
+
+      document.getElementById("generateBtn").addEventListener("click", async function () {
+        try {
+          const result = encodeSecret(coverText.value, secretText.value);
+          encodedText.value = result;
+          await copyToClipboard(result);
+          setStatus(encodeStatus, "Payload copied.", "success");
+        } catch (error) {
+          encodedText.value = "";
+          setStatus(encodeStatus, error.message, "error");
+        }
+      });
+
+      document.getElementById("copyEncodedBtn").addEventListener("click", async function () {
+        try {
+          if (!encodedText.value) {
+            throw new Error("Nothing to copy.");
+          }
+          await copyToClipboard(encodedText.value);
+          setStatus(encodeStatus, "Copied.", "success");
+        } catch (error) {
+          setStatus(encodeStatus, error.message || "Copy failed.", "error");
+        }
+      });
+
+      document.getElementById("decodeBtn").addEventListener("click", function () {
+        try {
+          const result = decodeSecret(decodeInput.value);
+          decodedText.value = result;
+          setStatus(decodeStatus, "Decoded.", "success");
+        } catch (error) {
+          decodedText.value = "";
+          setStatus(decodeStatus, error.message, "error");
+        }
+      });
+
+      document.getElementById("copyDecodedBtn").addEventListener("click", async function () {
+        try {
+          if (!decodedText.value) {
+            throw new Error("Nothing to copy.");
+          }
+          await copyToClipboard(decodedText.value);
+          setStatus(decodeStatus, "Copied.", "success");
+        } catch (error) {
+          setStatus(decodeStatus, error.message || "Copy failed.", "error");
+        }
+      });
+
+      document.getElementById("clearEncodeBtn").addEventListener("click", function () {
+        coverText.value = "";
+        secretText.value = "";
+        encodedText.value = "";
+        setStatus(encodeStatus, "");
+        coverText.focus();
+      });
+
+      document.getElementById("clearDecodeBtn").addEventListener("click", function () {
+        decodeInput.value = "";
+        decodedText.value = "";
+        setStatus(decodeStatus, "");
+        decodeInput.focus();
+      });
+    })();
+  </script>
+</body>
+</html>
